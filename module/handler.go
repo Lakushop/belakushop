@@ -820,9 +820,9 @@ func GetUserLogin(PASETOPUBLICKEYENV string, r *http.Request) (model.Payload, er
 	tokenstring := r.Header.Get("Authorization")
 	payload, err := Decode(os.Getenv(PASETOPUBLICKEYENV), tokenstring)
 	if err != nil {
-		return payload, err
+		return model.Payload{}, err
 	}
-	return payload, nil
+	return model.Payload(payload), nil
 }
 
 // get id
