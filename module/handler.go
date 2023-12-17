@@ -557,7 +557,7 @@ func GCFHandlerInsertProduct(PASETOPUBLICKEYENV, MONGOCONNSTRINGENV, dbname stri
 		return GCFReturnStruct(Response)
 	}
 	Response.Status = true
-	Response.Message = "Berhasil Insert Tiket Bis"
+	Response.Message = "Berhasil Insert product"
 	return GCFReturnStruct(Response)
 }
 
