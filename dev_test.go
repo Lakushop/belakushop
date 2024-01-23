@@ -1,4 +1,4 @@
-package HealHero
+package lakushop
 
 import (
 	"crypto/rand"
@@ -6,15 +6,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/serbaevents/backendSE/model"
-	"github.com/serbaevents/backendSE/module"
+	"github.com/lakushop/belakushop/model"
+	"github.com/lakushop/belakushop/module"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/argon2"
 	// "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var db = module.MongoConnect("MONGOSTRING", "serbaevent_db")
+var db = module.MongoConnect("MONGOSTRING", "lsdb")
 
 func TestGetUserFromEmail(t *testing.T) {
 	email := "admin@gmail.com"
@@ -26,17 +26,16 @@ func TestGetUserFromEmail(t *testing.T) {
 	}
 }
 
-// Insert-Tiket
-func TestInsertOneTiket(t *testing.T) {
-	var doc model.Tiket
-	doc.TujuanEvent = "Event Coldplay 10"
-	doc.Jemputan = "Terminal Mangga Sari jakarta timur st.12 jalan soekarno hatta"
-	doc.Keterangan = "Jam Jemputan 15:00"
+func TestInsertOneproduct(t *testing.T) {
+	var doc model.Product
+	doc.NamaProduct = "Baju anak motif spongebob"
+	doc.Deskripsi = "baju anak lembut dengan motif menarik"
+	doc.Kategori = "Baju anak"
 	doc.Harga = "RP 120.0000"
-	if doc.TujuanEvent == "" || doc.Jemputan == "" || doc.Keterangan == "" || doc.Harga == "" {
+	if doc.NamaProduct == "" || doc.Deskripsi == "" || doc.Kategori == "" || doc.Harga == "" {
 		t.Errorf("mohon untuk melengkapi data")
 	} else {
-		insertedID, err := module.InsertOneDoc(db, "tiket", doc)
+		insertedID, err := module.InsertOneDoc(db, "product", doc)
 		if err != nil {
 			t.Errorf("Error inserting document: %v", err)
 			fmt.Println("Data tidak berhasil disimpan")
@@ -101,13 +100,13 @@ func TestGetUserByAdmin(t *testing.T) {
 				fmt.Println(datapengguna)
 			}
 		}
-		if data.Role == "driver" {
-			datadriver, err := module.GetDriverFromAkun(data.ID, db)
+		if data.Role == "seller" {
+			dataseller, err := module.GetSellerFromAkun(data.ID, db)
 			if err != nil {
 				t.Errorf("Error getting document: %v", err)
 			} else {
-				datadriver.Akun = data
-				fmt.Println(datadriver)
+				dataseller.Akun = data
+				fmt.Println(dataseller)
 			}
 		}
 	}
@@ -115,31 +114,14 @@ func TestGetUserByAdmin(t *testing.T) {
 
 func TestSignUpPengguna(t *testing.T) {
 	var doc model.Pengguna
-	doc.NamaLengkap = "Sahijatea"
-	doc.TanggalLahir = "30/08/2004"
-	doc.JenisKelamin = "Perempuan"
-	doc.NomorHP = "081234567890"
-	doc.Alamat = "Wastukencana Blok No 32"
-	doc.Akun.Email = "sahjatea@gmail.com"
-	doc.Akun.Password = "sahijabandung"
+	doc.NamaLengkap = "admin"
+	doc.TanggalLahir = "21/12/2000"
+	doc.JenisKelamin = "laki-laki"
+	doc.NomorHP = "080000000000"
+	doc.Alamat = "Bandung"
+	doc.Akun.Email = "admin@gmail.com"
+	doc.Akun.Password = "admin123"
 	err := module.SignUpPengguna(db, doc)
-	if err != nil {
-		t.Errorf("Error inserting document: %v", err)
-	} else {
-		fmt.Println("Data berhasil disimpan dengan nama :", doc.NamaLengkap)
-	}
-}
-
-func TestSignUpDriver(t *testing.T) {
-	var doc model.Driver
-	doc.NamaLengkap = "Wawan Setiawan"
-	doc.JenisKelamin = "Laki-laki"
-	doc.NomorHP = "081292308273"
-	doc.Alamat = "Jalan pasanggrahan No 01"
-	doc.PlatBis = "D 1234 YBT"
-	doc.Akun.Email = "wawan@gmail.com"
-	doc.Akun.Password = "driverwawan"
-	err := module.SignUpDriver(db, doc)
 	if err != nil {
 		t.Errorf("Error inserting document: %v", err)
 	} else {
@@ -149,13 +131,13 @@ func TestSignUpDriver(t *testing.T) {
 
 func TestLogIn(t *testing.T) {
 	var doc model.User
-	doc.Email = "wawan@gmail.com"
-	doc.Password = "driverwawan"
+	doc.Email = "admin@gmail.com"
+	doc.Password = "admin123"
 	user, err := module.LogIn(db, doc)
 	if err != nil {
 		t.Errorf("Error getting document: %v", err)
 	} else {
-		fmt.Println("Selamat datang Driver:", user)
+		fmt.Println("Selamat datang user:", user)
 	}
 }
 
@@ -179,11 +161,11 @@ func TestUpdatePengguna(t *testing.T) {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	id2 := "6569adb673f4bc6c2069c0eb"
 	userid, _ := primitive.ObjectIDFromHex(id2)
-	doc.NamaLengkap = "Shayeza aselole"
-	doc.TanggalLahir = "30/08/2003"
+	doc.NamaLengkap = "Admin Test"
+	doc.TanggalLahir = "21/07/2000"
 	doc.JenisKelamin = "Perempuan"
-	doc.NomorHP = "081234567890"
-	doc.Alamat = "Wastukencana Blok No 32"
+	doc.NomorHP = "0800000000"
+	doc.Alamat = "Bandung"
 	if doc.NamaLengkap == "" || doc.TanggalLahir == "" || doc.JenisKelamin == "" || doc.NomorHP == "" || doc.Alamat == "" {
 		t.Errorf("mohon untuk melengkapi data")
 	} else {
@@ -203,8 +185,8 @@ func TestWatoken(t *testing.T) {
 }
 
 func TestInsertOneOrder(t *testing.T) {
-	var doc model.OrderTiket
-	doc.Event = "Event coldplay"
+	var doc model.Orderproduct
+	doc.NamaProduct = "Event coldplay"
 	doc.Quantity = "1"
 	doc.TotalCost = "Rp 1000.000"
 	doc.Status = "Pending"
@@ -221,31 +203,8 @@ func TestInsertOneOrder(t *testing.T) {
 	}
 }
 
-// test Tiket
-func TestInsertTiket(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
-	payload, err := module.Decode("fca3dbba6c382d6e937d33837f7428c1211e01a9928cbbbc0b86bb8351c02407", "v4.public.eyJleHAiOiIyMDIzLTEyLTAxVDE4OjU4OjE1KzA4OjAwIiwiaWF0IjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsImlkIjoiNjU1YzNiOWExZDY1MjRmMmYxMjAwZmM2IiwibmJmIjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsInJvbGUiOiJwZW5nZ3VuYSJ9GIKgKcp8gj4lzPH_NFvpx3GR2kBZ2qsDquYMKQdQ1PFpvHKlDy-FeO1umIGCaMuYyACP5jd-Y0at1WCOrsNRCA")
-	if err != nil {
-		t.Errorf("Error decode token: %v", err)
-	}
-	// if payload.Role != "mitra" {
-	// 	t.Errorf("Error role: %v", err)
-	// }
-	var datatiket model.Tiket
-	datatiket.TujuanEvent = "Event Coldplay 5 Jakarta"
-	datatiket.Jemputan = "Terminal Bus Jakarta"
-	datatiket.Keterangan = "Jemputan 15:00"
-	datatiket.Harga = "Rp 120.000"
-	err = module.InsertTiket(payload.Id, conn, datatiket)
-	if err != nil {
-		t.Errorf("Error insert : %v", err)
-	} else {
-		fmt.Println("Success!!!")
-	}
-}
-
-func TestUpdateTiket(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
+func TestUpdateProduct(t *testing.T) {
+	conn := module.MongoConnect("MONGOSTRING", "lsdb")
 	payload, err := module.Decode("fca3dbba6c382d6e937d33837f7428c1211e01a9928cbbbc0b86bb8351c02407", "v4.public.eyJleHAiOiIyMDIzLTEyLTAxVDE4OjU4OjE1KzA4OjAwIiwiaWF0IjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsImlkIjoiNjU1YzNiOWExZDY1MjRmMmYxMjAwZmM2IiwibmJmIjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsInJvbGUiOiJwZW5nZ3VuYSJ9GIKgKcp8gj4lzPH_NFvpx3GR2kBZ2qsDquYMKQdQ1PFpvHKlDy-FeO1umIGCaMuYyACP5jd-Y0at1WCOrsNRCA")
 	if err != nil {
 		t.Errorf("Error decode token: %v", err)
@@ -253,17 +212,17 @@ func TestUpdateTiket(t *testing.T) {
 	if payload.Role != "admin" {
 		t.Errorf("Error role: %v", err)
 	}
-	var datatiket model.Tiket
-	datatiket.TujuanEvent = "Event Coldplay 3 surabaya"
-	datatiket.Jemputan = "Terminal bus surabaya "
-	datatiket.Keterangan = "jam jemputan 13:00"
+	var datatiket model.Product
+	datatiket.NamaProduct = "Event Coldplay 3 surabaya"
+	datatiket.Deskripsi = "Terminal bus surabaya "
+	datatiket.Kategori = "jam jemputan 13:00"
 	datatiket.Harga = "Rp 100.000"
 	id := "6569a53d783c6970079a560b"
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Fatalf("error converting id to objectID: %v", err)
 	}
-	err = module.UpdateTiket(objectId, payload.Id, conn, datatiket)
+	err = module.Updateproduct(objectId, payload.Id, conn, datatiket)
 	if err != nil {
 		t.Errorf("Error update : %v", err)
 	} else {
@@ -271,21 +230,18 @@ func TestUpdateTiket(t *testing.T) {
 	}
 }
 
-func TestDeleteTiket(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
+func TestDeleteProduct(t *testing.T) {
+	conn := module.MongoConnect("MONGOSTRING", "lsdb")
 	payload, err := module.Decode("fca3dbba6c382d6e937d33837f7428c1211e01a9928cbbbc0b86bb8351c02407", "v4.public.eyJleHAiOiIyMDIzLTEyLTAxVDE4OjU4OjE1KzA4OjAwIiwiaWF0IjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsImlkIjoiNjU1YzNiOWExZDY1MjRmMmYxMjAwZmM2IiwibmJmIjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsInJvbGUiOiJwZW5nZ3VuYSJ9GIKgKcp8gj4lzPH_NFvpx3GR2kBZ2qsDquYMKQdQ1PFpvHKlDy-FeO1umIGCaMuYyACP5jd-Y0at1WCOrsNRCA")
 	if err != nil {
 		t.Errorf("Error decode token: %v", err)
 	}
-	// if payload.Role != "mitra" {
-	// 	t.Errorf("Error role: %v", err)
-	// }
 	id := "6569a53d783c6970079a560b"
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Fatalf("error converting id to objectID: %v", err)
 	}
-	err = module.DeleteTiket(objectId, payload.Id, conn)
+	err = module.DeleteProduct(objectId, payload.Id, conn)
 	if err != nil {
 		t.Errorf("Error delete : %v", err)
 	} else {
@@ -293,9 +249,9 @@ func TestDeleteTiket(t *testing.T) {
 	}
 }
 
-func TestGetAllTiket(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
-	data, err := module.GetAllTiket(conn)
+func TestGetAllProduct(t *testing.T) {
+	conn := module.MongoConnect("MONGOSTRING", "lsdb")
+	data, err := module.GetAllProduct(conn)
 	if err != nil {
 		t.Errorf("Error get all : %v", err)
 	} else {
@@ -303,34 +259,18 @@ func TestGetAllTiket(t *testing.T) {
 	}
 }
 
-func TestGetTiketFromID(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
+func TestGetProductFromID(t *testing.T) {
+	conn := module.MongoConnect("MONGOSTRING", "lsdb")
 	id := "6569a025a943657839880661"
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Fatalf("error converting id to objectID: %v", err)
 	}
-	tiket, err := module.GetTiketFromID(objectId, conn)
+	product, err := module.GetProductFromID(objectId, conn)
 	if err != nil {
-		t.Errorf("Error get Tiket : %v", err)
+		t.Errorf("Error get Product : %v", err)
 	} else {
-		fmt.Println(tiket)
-	}
-}
-
-// order
-func TestGetOrderFromID(t *testing.T) {
-	conn := module.MongoConnect("MONGOSTRING", "serbaevent_db")
-	id := "6569a027a943657839880669"
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		t.Fatalf("error converting id to objectID: %v", err)
-	}
-	order, err := module.GetOrderFromID(objectId, conn)
-	if err != nil {
-		t.Errorf("Error get order : %v", err)
-	} else {
-		fmt.Println(order)
+		fmt.Println(product)
 	}
 }
 
