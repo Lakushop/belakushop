@@ -82,7 +82,7 @@ func TestInsertUser(t *testing.T) {
 }
 
 func TestGetUserByAdmin(t *testing.T) {
-	id := "6569a026a943657839880665"
+	id := "65b7a3b39c00a28eabf478e8"
 	idparam, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		t.Errorf("Error converting id to objectID: %v", err)
@@ -114,12 +114,12 @@ func TestGetUserByAdmin(t *testing.T) {
 
 func TestSignUpPengguna(t *testing.T) {
 	var doc model.Pengguna
-	doc.NamaLengkap = "admin"
+	doc.NamaLengkap = "megah"
 	doc.TanggalLahir = "21/12/2000"
 	doc.JenisKelamin = "laki-laki"
 	doc.NomorHP = "080000000000"
 	doc.Alamat = "Bandung"
-	doc.Akun.Email = "admin@gmail.com"
+	doc.Akun.Email = "megah1@gmail.com"
 	doc.Akun.Password = "admin123"
 	err := module.SignUpPengguna(db, doc)
 	if err != nil {
@@ -157,13 +157,13 @@ func TestGeneratePrivateKeyPaseto(t *testing.T) {
 
 func TestUpdatePengguna(t *testing.T) {
 	var doc model.Pengguna
-	id := "6569adb773f4bc6c2069c0ed"
+	id := "65b7a3b39c00a28eabf478e8"
 	objectId, _ := primitive.ObjectIDFromHex(id)
-	id2 := "6569adb673f4bc6c2069c0eb"
+	id2 := "65b7a3b39c00a28eabf478e8"
 	userid, _ := primitive.ObjectIDFromHex(id2)
-	doc.NamaLengkap = "Admin Test"
-	doc.TanggalLahir = "21/07/2000"
-	doc.JenisKelamin = "Perempuan"
+	doc.NamaLengkap = "Admin"
+	doc.TanggalLahir = "21/12/2000"
+	doc.JenisKelamin = "laki-laki"
 	doc.NomorHP = "0800000000"
 	doc.Alamat = "Bandung"
 	if doc.NamaLengkap == "" || doc.TanggalLahir == "" || doc.JenisKelamin == "" || doc.NomorHP == "" || doc.Alamat == "" {
@@ -205,7 +205,7 @@ func TestInsertOneOrder(t *testing.T) {
 
 func TestUpdateProduct(t *testing.T) {
 	conn := module.MongoConnect("MONGOSTRING", "lsdb")
-	payload, err := module.Decode("fca3dbba6c382d6e937d33837f7428c1211e01a9928cbbbc0b86bb8351c02407", "v4.public.eyJleHAiOiIyMDIzLTEyLTAxVDE4OjU4OjE1KzA4OjAwIiwiaWF0IjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsImlkIjoiNjU1YzNiOWExZDY1MjRmMmYxMjAwZmM2IiwibmJmIjoiMjAyMy0xMi0wMVQxNjo1ODoxNSswODowMCIsInJvbGUiOiJwZW5nZ3VuYSJ9GIKgKcp8gj4lzPH_NFvpx3GR2kBZ2qsDquYMKQdQ1PFpvHKlDy-FeO1umIGCaMuYyACP5jd-Y0at1WCOrsNRCA")
+	payload, err := module.Decode("", "v4.public.eyJleHAiOiIyMDIzLTEyLTA0VDE2OjM4OjUzKzA3OjAwIiwiaWF0IjoiMjAyMy0xMi0wNFQxNDozODo1MyswNzowMCIsImlkIjoiNjU2OWEwMjZhOTQzNjU3ODM5ODgwNjY1IiwibmJmIjoiMjAyMy0xMi0wNFQxNDozODo1MyswNzowMCIsInJvbGUiOiJwZW5nZ3VuYSJ97W3y3P-Q0NPzHRef8UNVz1eDQ-Ucx3_vDm23Gb6XicxGm4B0LTAYcA8Q7v1Nl_MXJIb9XATP70-6URg8zYVtCA")
 	if err != nil {
 		t.Errorf("Error decode token: %v", err)
 	}
